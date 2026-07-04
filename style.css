@@ -1,13 +1,15 @@
-﻿:root {
-  --bg: #eef3fb;
-  --card: #ffffff;
-  --text: #152238;
-  --muted: #667085;
-  --line: #d8e0ed;
-  --blue: #2563eb;
-  --blue-dark: #1d4ed8;
-  --green: #16803c;
-  --red: #dc2626;
+﻿/* Offline Expense Splitter - Styling */
+
+:root {
+  --page-bg: #eef3fb;
+  --card-bg: #ffffff;
+  --text-dark: #152238;
+  --text-light: #667085;
+  --border-color: #d8e0ed;
+  --primary: #2563eb;
+  --primary-dark: #1d4ed8;
+  --success: #16803c;
+  --danger: #dc2626;
 }
 
 * {
@@ -16,8 +18,8 @@
 
 body {
   margin: 0;
-  background: var(--bg);
-  color: var(--text);
+  background: var(--page-bg);
+  color: var(--text-dark);
   font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -30,7 +32,7 @@ select {
 button {
   border: none;
   border-radius: 8px;
-  background: var(--blue);
+  background: var(--primary);
   color: white;
   cursor: pointer;
   font-weight: 700;
@@ -38,20 +40,20 @@ button {
 }
 
 button:hover {
-  background: var(--blue-dark);
+  background: var(--primary-dark);
 }
 
 input,
 select {
   width: 100%;
-  border: 1px solid var(--line);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 12px;
 }
 
 input:focus,
 select:focus {
-  border-color: var(--blue);
+  border-color: var(--primary);
   outline: 3px solid rgba(37, 99, 235, 0.15);
 }
 
@@ -72,11 +74,13 @@ h2 {
 }
 
 label {
-  color: var(--muted);
+  color: var(--text-light);
   display: grid;
   font-weight: 700;
   gap: 7px;
 }
+
+/* Main layout */
 
 .container {
   margin: 0 auto;
@@ -93,7 +97,7 @@ label {
 }
 
 .tagline {
-  color: var(--blue);
+  color: var(--primary);
   font-size: 13px;
   font-weight: 800;
   letter-spacing: 1px;
@@ -102,8 +106,10 @@ label {
 }
 
 .hero-text {
-  color: var(--muted);
+  color: var(--text-light);
+  line-height: 1.5;
   margin-top: 10px;
+  max-width: 700px;
 }
 
 .grid {
@@ -113,8 +119,8 @@ label {
 }
 
 .card {
-  background: var(--card);
-  border: 1px solid var(--line);
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   box-shadow: 0 12px 30px rgba(21, 34, 56, 0.08);
   padding: 18px;
@@ -123,6 +129,8 @@ label {
 .wide-card {
   grid-column: 1 / -1;
 }
+
+/* Forms */
 
 .row-form {
   display: grid;
@@ -140,6 +148,16 @@ label {
   width: 100%;
 }
 
+.small-btn {
+  background: #eaf1ff;
+  color: var(--primary-dark);
+  padding: 8px 10px;
+}
+
+.small-btn:hover {
+  background: #dbeafe;
+}
+
 .danger-btn {
   background: #fee2e2;
   color: #991b1b;
@@ -149,15 +167,12 @@ label {
   background: #fecaca;
 }
 
-.small-btn {
-  background: #eaf1ff;
-  color: var(--blue-dark);
-  padding: 8px 10px;
+.message {
+  color: var(--danger);
+  min-height: 20px;
 }
 
-.small-btn:hover {
-  background: #dbeafe;
-}
+/* Lists and rows */
 
 .list,
 .history-list {
@@ -171,7 +186,7 @@ label {
 .history-item,
 .empty {
   align-items: center;
-  border: 1px solid var(--line);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   display: flex;
   gap: 10px;
@@ -195,6 +210,12 @@ label {
   background: #ffe4e6;
 }
 
+.empty {
+  color: var(--text-light);
+}
+
+/* Split checkboxes */
+
 .split-title {
   align-items: center;
   display: flex;
@@ -210,7 +231,7 @@ label {
 
 .check-item {
   align-items: center;
-  border: 1px solid var(--line);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   display: flex;
   gap: 8px;
@@ -221,14 +242,11 @@ label {
   width: auto;
 }
 
-.message {
-  color: var(--red);
-  min-height: 20px;
-}
+/* Result */
 
 .total-box {
   background: #f8fbff;
-  border: 1px solid var(--line);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   display: grid;
   gap: 6px;
@@ -237,7 +255,7 @@ label {
 }
 
 .total-box span {
-  color: var(--muted);
+  color: var(--text-light);
   font-weight: 700;
 }
 
@@ -246,22 +264,18 @@ label {
 }
 
 .positive {
-  color: var(--green);
+  color: var(--success);
   font-weight: 800;
 }
 
 .negative {
-  color: var(--red);
+  color: var(--danger);
   font-weight: 800;
 }
 
 .neutral {
-  color: var(--muted);
+  color: var(--text-light);
   font-weight: 800;
-}
-
-.empty {
-  color: var(--muted);
 }
 
 .history-item {
@@ -275,8 +289,10 @@ label {
 
 .history-text small,
 .balance-name small {
-  color: var(--muted);
+  color: var(--text-light);
 }
+
+/* Mobile view */
 
 @media (max-width: 760px) {
   .container {

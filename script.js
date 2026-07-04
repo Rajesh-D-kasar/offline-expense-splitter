@@ -1,10 +1,11 @@
-﻿// Simple offline expense splitter
-// Data browser ke localStorage me save hota hai.
+﻿// Offline Expense Splitter
+// This file keeps the logic simple so it is easy to understand and explain.
 
 var friends = [];
 var expenses = [];
 var storageKey = "simpleExpenseSplitterData";
 
+// Form and page elements
 var friendForm = document.getElementById("friendForm");
 var friendInput = document.getElementById("friendInput");
 var friendList = document.getElementById("friendList");
@@ -33,12 +34,12 @@ function showMoney(amount) {
 }
 
 function saveData() {
-  var data = {
+  var appData = {
     friends: friends,
     expenses: expenses
   };
 
-  localStorage.setItem(storageKey, JSON.stringify(data));
+  localStorage.setItem(storageKey, JSON.stringify(appData));
 }
 
 function loadData() {
@@ -48,14 +49,14 @@ function loadData() {
     return;
   }
 
-  var data = JSON.parse(savedData);
+  var appData = JSON.parse(savedData);
 
-  if (data.friends) {
-    friends = data.friends;
+  if (appData.friends) {
+    friends = appData.friends;
   }
 
-  if (data.expenses) {
-    expenses = data.expenses;
+  if (appData.expenses) {
+    expenses = appData.expenses;
   }
 }
 
@@ -69,8 +70,16 @@ function getFriendName(friendId) {
   return "Unknown";
 }
 
-function renderFriends() {
-  var html = "";
+function showMessage(text) {
+  message.innerText = text;
+}
+
+function clearMessage() {
+  message.innerText = "";
+}
+
+function showFriends() {
+  var friendHtml = "";
 
   if (friends.length === 0) {
     friendList.innerHTML = '<div class="empty">No friends added yet.</div>';
@@ -78,17 +87,17 @@ function renderFriends() {
   }
 
   for (var i = 0; i < friends.length; i++) {
-    html += '<div class="friend-item">';
-    html += '<strong class="friend-name">' + friends[i].name + '</strong>';
-    html += '<button class="delete-btn" onclick="deleteFriend(\'' + friends[i].id + '\')">Delete</button>';
-    html += '</div>';
+    friendHtml += '<div class="friend-item">';
+    friendHtml += '<strong class="friend-name">' + friends[i].name + '</strong>';
+    friendHtml += '<button class="delete-btn" onclick="deleteFriend(\'' + friends[i].id + '\')">Delete</button>';
+    friendHtml += '</div>';
   }
 
-  friendList.innerHTML = html;
+  friendList.innerHTML = friendHtml;
 }
 
-function renderPaidByOptions() {
-  var html = "";
+function showPaidByOptions() {
+  var optionHtml = "";
 
   if (friends.length === 0) {
     paidBy.innerHTML = '<option value="">Add friends first</option>';
@@ -96,14 +105,14 @@ function renderPaidByOptions() {
   }
 
   for (var i = 0; i < friends.length; i++) {
-    html += '<option value="' + friends[i].id + '">' + friends[i].name + '</option>';
+    optionHtml += '<option value="' + friends[i].id + '">' + friends[i].name + '</option>';
   }
 
-  paidBy.innerHTML = html;
+  paidBy.innerHTML = optionHtml;
 }
 
-function renderSplitCheckboxes() {
-  var html = "";
+function showSplitOptions() {
+  var checkboxHtml = "";
 
   if (friends.length === 0) {
     splitList.innerHTML = '<div class="empty">Friends add karne ke baad yaha list aayegi.</div>';
@@ -111,18 +120,19 @@ function renderSplitCheckboxes() {
   }
 
   for (var i = 0; i < friends.length; i++) {
-    html += '<label class="check-item">';
-    html += '<input type="checkbox" class="splitCheck" value="' + friends[i].id + '" checked>';
-    html += '<span>' + friends[i].name + '</span>';
-    html += '</label>';
+    checkboxHtml += '<label class="check-item">';
+    checkboxHtml += '<input type="checkbox" class="splitCheck" value="' + friends[i].id + '" checked>';
+    checkboxHtml += '<span>' + friends[i].name + '</span>';
+    checkboxHtml += '</label>';
   }
 
-  splitList.innerHTML = html;
+  splitList.innerHTML = checkboxHtml;
 }
 
 function calculateBalances() {
   var balances = [];
 
+  // First create a blank balance record for every friend.
   for (var i = 0; i < friends.length; i++) {
     balances.push({
       id: friends[i].id,
@@ -133,24 +143,26 @@ function calculateBalances() {
     });
   }
 
+  // Then add paid amount and share amount from every expense.
   for (var j = 0; j < expenses.length; j++) {
-    var expense = expenses[j];
-    var splitCount = expense.splitBetween.length;
-    var onePersonShare = expense.amount / splitCount;
+    var currentExpense = expenses[j];
+    var splitCount = currentExpense.splitBetween.length;
+    var oneFriendShare = currentExpense.amount / splitCount;
 
     for (var k = 0; k < balances.length; k++) {
-      if (balances[k].id === expense.paidBy) {
-        balances[k].paid = balances[k].paid + expense.amount;
+      if (balances[k].id === currentExpense.paidBy) {
+        balances[k].paid = balances[k].paid + currentExpense.amount;
       }
 
-      for (var m = 0; m < expense.splitBetween.length; m++) {
-        if (balances[k].id === expense.splitBetween[m]) {
-          balances[k].share = balances[k].share + onePersonShare;
+      for (var m = 0; m < currentExpense.splitBetween.length; m++) {
+        if (balances[k].id === currentExpense.splitBetween[m]) {
+          balances[k].share = balances[k].share + oneFriendShare;
         }
       }
     }
   }
 
+  // Final balance = total paid - actual share.
   for (var n = 0; n < balances.length; n++) {
     balances[n].balance = balances[n].paid - balances[n].share;
   }
@@ -158,10 +170,10 @@ function calculateBalances() {
   return balances;
 }
 
-function renderResult() {
+function showResult() {
   var total = 0;
   var balances = calculateBalances();
-  var html = "";
+  var resultHtml = "";
 
   for (var i = 0; i < expenses.length; i++) {
     total = total + expenses[i].amount;
@@ -176,87 +188,87 @@ function renderResult() {
 
   for (var j = 0; j < balances.length; j++) {
     var balanceText = "";
-    var className = "";
+    var colorClass = "";
 
     if (balances[j].balance > 0) {
       balanceText = "Gets " + showMoney(balances[j].balance);
-      className = "positive";
+      colorClass = "positive";
     } else if (balances[j].balance < 0) {
       balanceText = "Pays " + showMoney(Math.abs(balances[j].balance));
-      className = "negative";
+      colorClass = "negative";
     } else {
       balanceText = "Settled";
-      className = "neutral";
+      colorClass = "neutral";
     }
 
-    html += '<div class="balance-item">';
-    html += '<div class="balance-name">';
-    html += '<strong>' + balances[j].name + '</strong><br>';
-    html += '<small>Paid: ' + showMoney(balances[j].paid) + ' | Share: ' + showMoney(balances[j].share) + '</small>';
-    html += '</div>';
-    html += '<span class="' + className + '">' + balanceText + '</span>';
-    html += '</div>';
+    resultHtml += '<div class="balance-item">';
+    resultHtml += '<div class="balance-name">';
+    resultHtml += '<strong>' + balances[j].name + '</strong><br>';
+    resultHtml += '<small>Paid: ' + showMoney(balances[j].paid) + ' | Share: ' + showMoney(balances[j].share) + '</small>';
+    resultHtml += '</div>';
+    resultHtml += '<span class="' + colorClass + '">' + balanceText + '</span>';
+    resultHtml += '</div>';
   }
 
-  balanceList.innerHTML = html;
+  balanceList.innerHTML = resultHtml;
 }
 
-function renderSettlement() {
+function showSettlement() {
   var balances = calculateBalances();
-  var receiveList = [];
-  var payList = [];
-  var html = "";
+  var receivers = [];
+  var payers = [];
+  var settlementHtml = "";
 
   for (var i = 0; i < balances.length; i++) {
     if (balances[i].balance > 0) {
-      receiveList.push({
+      receivers.push({
         name: balances[i].name,
         amount: balances[i].balance
       });
     }
 
     if (balances[i].balance < 0) {
-      payList.push({
+      payers.push({
         name: balances[i].name,
         amount: Math.abs(balances[i].balance)
       });
     }
   }
 
-  var payIndex = 0;
-  var receiveIndex = 0;
+  var payerIndex = 0;
+  var receiverIndex = 0;
 
-  while (payIndex < payList.length && receiveIndex < receiveList.length) {
-    var payer = payList[payIndex];
-    var receiver = receiveList[receiveIndex];
-    var payAmount = Math.min(payer.amount, receiver.amount);
+  while (payerIndex < payers.length && receiverIndex < receivers.length) {
+    var payer = payers[payerIndex];
+    var receiver = receivers[receiverIndex];
+    var amountToPay = Math.min(payer.amount, receiver.amount);
 
-    html += '<div class="settlement-item">';
-    html += '<strong>' + payer.name + ' pays ' + receiver.name + '</strong>';
-    html += '<span class="negative">' + showMoney(payAmount) + '</span>';
-    html += '</div>';
+    settlementHtml += '<div class="settlement-item">';
+    settlementHtml += '<strong>' + payer.name + ' pays ' + receiver.name + '</strong>';
+    settlementHtml += '<span class="negative">' + showMoney(amountToPay) + '</span>';
+    settlementHtml += '</div>';
 
-    payer.amount = payer.amount - payAmount;
-    receiver.amount = receiver.amount - payAmount;
+    payer.amount = payer.amount - amountToPay;
+    receiver.amount = receiver.amount - amountToPay;
 
     if (payer.amount < 0.01) {
-      payIndex++;
+      payerIndex++;
     }
 
     if (receiver.amount < 0.01) {
-      receiveIndex++;
+      receiverIndex++;
     }
   }
 
-  if (html === "") {
+  if (settlementHtml === "") {
     settlementList.innerHTML = '<div class="empty">No payment needed.</div>';
   } else {
-    settlementList.innerHTML = html;
+    settlementList.innerHTML = settlementHtml;
   }
 }
 
-function renderHistory() {
-  var html = "";
+function showHistory() {
+  var historyHtml = "";
 
   if (expenses.length === 0) {
     historyList.innerHTML = '<div class="empty">No expense added yet.</div>';
@@ -264,50 +276,50 @@ function renderHistory() {
   }
 
   for (var i = expenses.length - 1; i >= 0; i--) {
-    var expense = expenses[i];
+    var currentExpense = expenses[i];
     var splitNames = "";
 
-    for (var j = 0; j < expense.splitBetween.length; j++) {
-      splitNames += getFriendName(expense.splitBetween[j]);
+    for (var j = 0; j < currentExpense.splitBetween.length; j++) {
+      splitNames += getFriendName(currentExpense.splitBetween[j]);
 
-      if (j < expense.splitBetween.length - 1) {
+      if (j < currentExpense.splitBetween.length - 1) {
         splitNames += ", ";
       }
     }
 
-    html += '<div class="history-item">';
-    html += '<div class="history-text">';
-    html += '<strong>' + expense.name + ' - ' + showMoney(expense.amount) + '</strong>';
-    html += '<small>Paid by: ' + getFriendName(expense.paidBy) + '</small>';
-    html += '<small>Split between: ' + splitNames + '</small>';
-    html += '</div>';
-    html += '<button class="delete-btn" onclick="deleteExpense(\'' + expense.id + '\')">Delete</button>';
-    html += '</div>';
+    historyHtml += '<div class="history-item">';
+    historyHtml += '<div class="history-text">';
+    historyHtml += '<strong>' + currentExpense.name + ' - ' + showMoney(currentExpense.amount) + '</strong>';
+    historyHtml += '<small>Paid by: ' + getFriendName(currentExpense.paidBy) + '</small>';
+    historyHtml += '<small>Split between: ' + splitNames + '</small>';
+    historyHtml += '</div>';
+    historyHtml += '<button class="delete-btn" onclick="deleteExpense(\'' + currentExpense.id + '\')">Delete</button>';
+    historyHtml += '</div>';
   }
 
-  historyList.innerHTML = html;
+  historyList.innerHTML = historyHtml;
 }
 
-function renderAll() {
-  renderFriends();
-  renderPaidByOptions();
-  renderSplitCheckboxes();
-  renderResult();
-  renderSettlement();
-  renderHistory();
+function refreshPage() {
+  showFriends();
+  showPaidByOptions();
+  showSplitOptions();
+  showResult();
+  showSettlement();
+  showHistory();
 }
 
 function addFriend(name) {
   name = name.trim();
 
   if (name === "") {
-    message.innerText = "Please enter friend name.";
+    showMessage("Please enter friend name.");
     return;
   }
 
   for (var i = 0; i < friends.length; i++) {
     if (friends[i].name.toLowerCase() === name.toLowerCase()) {
-      message.innerText = "This friend already exists.";
+      showMessage("This friend already exists.");
       return;
     }
   }
@@ -318,9 +330,9 @@ function addFriend(name) {
   });
 
   friendInput.value = "";
-  message.innerText = "";
+  clearMessage();
   saveData();
-  renderAll();
+  refreshPage();
 }
 
 function deleteFriend(friendId) {
@@ -330,38 +342,38 @@ function deleteFriend(friendId) {
     return;
   }
 
-  var newFriends = [];
-  var newExpenses = [];
+  var updatedFriends = [];
+  var updatedExpenses = [];
 
   for (var i = 0; i < friends.length; i++) {
     if (friends[i].id !== friendId) {
-      newFriends.push(friends[i]);
+      updatedFriends.push(friends[i]);
     }
   }
 
   for (var j = 0; j < expenses.length; j++) {
-    var expense = expenses[j];
-    var friendUsed = false;
+    var currentExpense = expenses[j];
+    var friendFoundInExpense = false;
 
-    if (expense.paidBy === friendId) {
-      friendUsed = true;
+    if (currentExpense.paidBy === friendId) {
+      friendFoundInExpense = true;
     }
 
-    for (var k = 0; k < expense.splitBetween.length; k++) {
-      if (expense.splitBetween[k] === friendId) {
-        friendUsed = true;
+    for (var k = 0; k < currentExpense.splitBetween.length; k++) {
+      if (currentExpense.splitBetween[k] === friendId) {
+        friendFoundInExpense = true;
       }
     }
 
-    if (friendUsed === false) {
-      newExpenses.push(expense);
+    if (friendFoundInExpense === false) {
+      updatedExpenses.push(currentExpense);
     }
   }
 
-  friends = newFriends;
-  expenses = newExpenses;
+  friends = updatedFriends;
+  expenses = updatedExpenses;
   saveData();
-  renderAll();
+  refreshPage();
 }
 
 function addExpense() {
@@ -378,27 +390,27 @@ function addExpense() {
   }
 
   if (friends.length === 0) {
-    message.innerText = "Please add friends first.";
+    showMessage("Please add friends first.");
     return;
   }
 
   if (name === "") {
-    message.innerText = "Please enter expense name.";
+    showMessage("Please enter expense name.");
     return;
   }
 
   if (amount <= 0) {
-    message.innerText = "Please enter valid amount.";
+    showMessage("Please enter valid amount.");
     return;
   }
 
   if (payerId === "") {
-    message.innerText = "Please select paid by.";
+    showMessage("Please select paid by.");
     return;
   }
 
   if (splitBetween.length === 0) {
-    message.innerText = "Please select at least one friend for split.";
+    showMessage("Please select at least one friend for split.");
     return;
   }
 
@@ -412,23 +424,23 @@ function addExpense() {
 
   expenseName.value = "";
   expenseAmount.value = "";
-  message.innerText = "";
+  clearMessage();
   saveData();
-  renderAll();
+  refreshPage();
 }
 
 function deleteExpense(expenseId) {
-  var newExpenses = [];
+  var updatedExpenses = [];
 
   for (var i = 0; i < expenses.length; i++) {
     if (expenses[i].id !== expenseId) {
-      newExpenses.push(expenses[i]);
+      updatedExpenses.push(expenses[i]);
     }
   }
 
-  expenses = newExpenses;
+  expenses = updatedExpenses;
   saveData();
-  renderAll();
+  refreshPage();
 }
 
 function selectAllFriends() {
@@ -449,7 +461,8 @@ function resetApp() {
   friends = [];
   expenses = [];
   localStorage.removeItem(storageKey);
-  renderAll();
+  clearMessage();
+  refreshPage();
 }
 
 friendForm.addEventListener("submit", function(event) {
@@ -471,4 +484,4 @@ resetBtn.addEventListener("click", function() {
 });
 
 loadData();
-renderAll();
+refreshPage();

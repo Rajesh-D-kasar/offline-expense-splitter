@@ -8,31 +8,36 @@
 </head>
 <body>
   <div class="container">
+    <!-- Project heading -->
     <header class="hero">
       <div>
         <p class="tagline">Mini Project using HTML, CSS and JavaScript</p>
         <h1>Offline Expense Splitter</h1>
-        <p class="hero-text">Friends ke beech expense split karo. Internet ki zaroorat nahi, data browser me save rahega.</p>
+        <p class="hero-text">
+          Add friends, enter expenses and see who has to pay whom. This app works offline and saves data in your browser.
+        </p>
       </div>
       <button id="resetBtn" class="danger-btn" type="button">Reset All</button>
     </header>
 
     <main class="grid">
+      <!-- Friend section -->
       <section class="card">
         <h2>1. Add Friends</h2>
         <form id="friendForm" class="row-form">
-          <input id="friendInput" type="text" placeholder="Friend name" autocomplete="off">
+          <input id="friendInput" type="text" placeholder="Enter friend name" autocomplete="off">
           <button type="submit">Add</button>
         </form>
         <div id="friendList" class="list"></div>
       </section>
 
+      <!-- Expense section -->
       <section class="card">
         <h2>2. Add Expense</h2>
         <form id="expenseForm" class="expense-form">
           <label>
             Expense Name
-            <input id="expenseName" type="text" placeholder="Example: Pizza">
+            <input id="expenseName" type="text" placeholder="Example: Pizza, Taxi, Room rent">
           </label>
 
           <label>
@@ -58,6 +63,7 @@
         </form>
       </section>
 
+      <!-- Result section -->
       <section class="card">
         <h2>3. Result</h2>
         <div class="total-box">
@@ -67,11 +73,13 @@
         <div id="balanceList" class="list"></div>
       </section>
 
+      <!-- Settlement section -->
       <section class="card">
         <h2>4. Final Settlement</h2>
         <div id="settlementList" class="list"></div>
       </section>
 
+      <!-- History section -->
       <section class="card wide-card">
         <h2>Expense History</h2>
         <div id="historyList" class="history-list"></div>
