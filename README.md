@@ -1,6 +1,6 @@
 ﻿# Offline Expense Splitter
 
-This is a simple offline expense splitter mini project made with only HTML, CSS and JavaScript.
+Offline Expense Splitter is a simple mini project built with only HTML, CSS and JavaScript. It helps friends split group expenses, check each person's balance and see the final settlement amount without using the internet.
 
 ## Features
 
