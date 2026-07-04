@@ -1,0 +1,84 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Offline Expense Splitter</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header class="hero">
+      <div>
+        <p class="tagline">Mini Project using HTML, CSS and JavaScript</p>
+        <h1>Offline Expense Splitter</h1>
+        <p class="hero-text">Friends ke beech expense split karo. Internet ki zaroorat nahi, data browser me save rahega.</p>
+      </div>
+      <button id="resetBtn" class="danger-btn" type="button">Reset All</button>
+    </header>
+
+    <main class="grid">
+      <section class="card">
+        <h2>1. Add Friends</h2>
+        <form id="friendForm" class="row-form">
+          <input id="friendInput" type="text" placeholder="Friend name" autocomplete="off">
+          <button type="submit">Add</button>
+        </form>
+        <div id="friendList" class="list"></div>
+      </section>
+
+      <section class="card">
+        <h2>2. Add Expense</h2>
+        <form id="expenseForm" class="expense-form">
+          <label>
+            Expense Name
+            <input id="expenseName" type="text" placeholder="Example: Pizza">
+          </label>
+
+          <label>
+            Amount
+            <input id="expenseAmount" type="number" min="1" placeholder="Example: 500">
+          </label>
+
+          <label>
+            Paid By
+            <select id="paidBy"></select>
+          </label>
+
+          <div>
+            <div class="split-title">
+              <strong>Split Between</strong>
+              <button id="selectAllBtn" class="small-btn" type="button">Select All</button>
+            </div>
+            <div id="splitList" class="check-list"></div>
+          </div>
+
+          <p id="message" class="message"></p>
+          <button type="submit" class="full-btn">Add Expense</button>
+        </form>
+      </section>
+
+      <section class="card">
+        <h2>3. Result</h2>
+        <div class="total-box">
+          <span>Total Expense</span>
+          <strong id="totalExpense">Rs. 0</strong>
+        </div>
+        <div id="balanceList" class="list"></div>
+      </section>
+
+      <section class="card">
+        <h2>4. Final Settlement</h2>
+        <div id="settlementList" class="list"></div>
+      </section>
+
+      <section class="card wide-card">
+        <h2>Expense History</h2>
+        <div id="historyList" class="history-list"></div>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
